@@ -1,8 +1,7 @@
 package erro
 
 import (
-	"errors"
-	"strings"
+	"fmt"
 )
 
 func Recover(fn func(error)) {
@@ -15,9 +14,12 @@ func Recover(fn func(error)) {
 	}
 }
 
-func Assert(b bool, msg ...string) {
+func Assert(b bool, msg string, args ...any) {
 	if !b {
-		panic(errors.New(strings.Join(msg, "")))
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
+		panic(msg)
 	}
 }
 
