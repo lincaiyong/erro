@@ -1,8 +1,12 @@
 package erro
 
-func Recover(fn func(any)) {
+func Recover(fn func(error)) {
 	if r := recover(); r != nil {
-		fn(r)
+		if err, ok := r.(error); ok {
+			fn(err)
+		} else {
+			panic(r)
+		}
 	}
 }
 
