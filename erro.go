@@ -10,9 +10,29 @@ func Recover(fn func(error)) {
 	}
 }
 
-func Check[T any](v T, err error) T {
+func Check0(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Check1[T any](v T, err error) T {
 	if err != nil {
 		panic(err)
 	}
 	return v
+}
+
+func Check2[S, T any](s S, t T, err error) (S, T) {
+	if err != nil {
+		panic(err)
+	}
+	return s, t
+}
+
+func Check3[R, S, T any](r R, s S, t T, err error) (R, S, T) {
+	if err != nil {
+		panic(err)
+	}
+	return r, s, t
 }
