@@ -1,5 +1,10 @@
 package erro
 
+import (
+	"errors"
+	"strings"
+)
+
 func Recover(fn func(error)) {
 	if r := recover(); r != nil {
 		if err, ok := r.(error); ok {
@@ -7,6 +12,12 @@ func Recover(fn func(error)) {
 		} else {
 			panic(r)
 		}
+	}
+}
+
+func Assert(b bool, msg ...string) {
+	if !b {
+		panic(errors.New(strings.Join(msg, "")))
 	}
 }
 
