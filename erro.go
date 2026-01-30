@@ -1,6 +1,7 @@
 package erro
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -19,7 +20,7 @@ func Assert(b bool, msg string, args ...any) {
 		if len(args) > 0 {
 			msg = fmt.Sprintf(msg, args...)
 		}
-		panic(msg)
+		panic(errors.New(msg))
 	}
 }
 
