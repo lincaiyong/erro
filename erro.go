@@ -23,29 +23,33 @@ func TracePkg(pkg string) {
 	tracePkg = pkg
 }
 
+func traceMsg(msg string) string {
+	const maxStackDepth = 32
+	pcs := make([]uintptr, maxStackDepth)
+	n := runtime.Callers(3, pcs) // 2 = skip runtime.Callers + this + Assert
+
+	frames := runtime.CallersFrames(pcs[:n])
+	var sb strings.Builder
+	sb.WriteString(msg)
+	sb.WriteString("\nStack trace:\n")
+	for {
+		frame, more := frames.Next()
+		if tracePkg == "" || strings.HasPrefix(frame.Function, tracePkg) {
+			sb.WriteString(fmt.Sprintf("  %s ( %s:%d )\n", frame.Function, frame.File, frame.Line))
+		}
+		if !more {
+			break
+		}
+	}
+	return sb.String()
+}
+
 func Assert(b bool, msg string, args ...any) {
 	if !b {
 		if len(args) > 0 {
 			msg = fmt.Sprintf(msg, args...)
 		}
-		const maxStackDepth = 32
-		pcs := make([]uintptr, maxStackDepth)
-		n := runtime.Callers(2, pcs) // 2 = skip runtime.Callers + Assert
-
-		frames := runtime.CallersFrames(pcs[:n])
-		var sb strings.Builder
-		sb.WriteString(msg)
-		sb.WriteString("\nStack trace:\n")
-		for {
-			frame, more := frames.Next()
-			if tracePkg == "" || strings.HasPrefix(frame.Function, tracePkg) {
-				sb.WriteString(fmt.Sprintf("  %s ( %s:%d )\n", frame.Function, frame.File, frame.Line))
-			}
-			if !more {
-				break
-			}
-		}
-		msg = sb.String()
+		msg = traceMsg(msg)
 		panic(errors.New(msg))
 	}
 }
@@ -61,10 +65,8 @@ func E1[T any](v T, err error) *C1[T] {
 
 func (c *C1[T]) Assert(msg string) T {
 	if c.err != nil {
-		if msg != "" {
-			c.err = fmt.Errorf("%s: %w", msg, c.err)
-		}
-		panic(c.err)
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
+		panic(errors.New(msg))
 	}
 	return c.v
 }
@@ -79,10 +81,8 @@ func E0(err error) *C0 {
 
 func (c *C0) Assert(msg string) {
 	if c.err != nil {
-		if msg != "" {
-			c.err = fmt.Errorf("%s: %w", msg, c.err)
-		}
-		panic(c.err)
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
+		panic(errors.New(msg))
 	}
 }
 
@@ -98,10 +98,8 @@ func E2[T1, T2 any](v1 T1, v2 T2, err error) *C2[T1, T2] {
 
 func (c *C2[T1, T2]) Assert(msg string) (T1, T2) {
 	if c.err != nil {
-		if msg != "" {
-			c.err = fmt.Errorf("%s: %w", msg, c.err)
-		}
-		panic(c.err)
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
+		panic(errors.New(msg))
 	}
 	return c.v1, c.v2
 }
@@ -119,10 +117,8 @@ func E3[T1, T2, T3 any](v1 T1, v2 T2, v3 T3, err error) *C3[T1, T2, T3] {
 
 func (c *C3[T1, T2, T3]) Assert(msg string) (T1, T2, T3) {
 	if c.err != nil {
-		if msg != "" {
-			c.err = fmt.Errorf("%s: %w", msg, c.err)
-		}
-		panic(c.err)
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
+		panic(errors.New(msg))
 	}
 	return c.v1, c.v2, c.v3
 }
