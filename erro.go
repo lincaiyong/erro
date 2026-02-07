@@ -100,3 +100,30 @@ func (c *C3[T1, T2, T3]) Assert(msg string) (T1, T2, T3) {
 	}
 	return c.v1, c.v2, c.v3
 }
+
+func Check0(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Check1[T any](v T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
+
+func Check2[S, T any](s S, t T, err error) (S, T) {
+	if err != nil {
+		panic(err)
+	}
+	return s, t
+}
+
+func Check3[R, S, T any](r R, s S, t T, err error) (R, S, T) {
+	if err != nil {
+		panic(err)
+	}
+	return r, s, t
+}
