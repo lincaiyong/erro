@@ -24,41 +24,79 @@ func Assert(b bool, msg string, args ...any) {
 	}
 }
 
-func Check0(err error, msg ...string) {
-	if err != nil {
-		if len(msg) == 1 {
-			err = fmt.Errorf("%s: %w", msg[0], err)
+type C1[T any] struct {
+	v   T
+	err error
+}
+
+func E1[T any](v T, err error) *C1[T] {
+	return &C1[T]{v: v, err: err}
+}
+
+func (c *C1[T]) Assert(msg string) T {
+	if c.err != nil {
+		if msg != "" {
+			c.err = fmt.Errorf("%s: %w", msg, c.err)
 		}
-		panic(err)
+		panic(c.err)
+	}
+	return c.v
+}
+
+type C0 struct {
+	err error
+}
+
+func E0(err error) *C0 {
+	return &C0{err: err}
+}
+
+func (c *C0) Assert(msg string) {
+	if c.err != nil {
+		if msg != "" {
+			c.err = fmt.Errorf("%s: %w", msg, c.err)
+		}
+		panic(c.err)
 	}
 }
 
-func Check1[T any](v T, err error, msg ...string) T {
-	if err != nil {
-		if len(msg) == 1 {
-			err = fmt.Errorf("%s: %w", msg[0], err)
-		}
-		panic(err)
-	}
-	return v
+type C2[T1, T2 any] struct {
+	v1  T1
+	v2  T2
+	err error
 }
 
-func Check2[S, T any](s S, t T, err error, msg ...string) (S, T) {
-	if err != nil {
-		if len(msg) == 1 {
-			err = fmt.Errorf("%s: %w", msg[0], err)
-		}
-		panic(err)
-	}
-	return s, t
+func E2[T1, T2 any](v1 T1, v2 T2, err error) *C2[T1, T2] {
+	return &C2[T1, T2]{v1: v1, v2: v2, err: err}
 }
 
-func Check3[R, S, T any](r R, s S, t T, err error, msg ...string) (R, S, T) {
-	if err != nil {
-		if len(msg) == 1 {
-			err = fmt.Errorf("%s: %w", msg[0], err)
+func (c *C2[T1, T2]) Assert(msg string) (T1, T2) {
+	if c.err != nil {
+		if msg != "" {
+			c.err = fmt.Errorf("%s: %w", msg, c.err)
 		}
-		panic(err)
+		panic(c.err)
 	}
-	return r, s, t
+	return c.v1, c.v2
+}
+
+type C3[T1, T2, T3 any] struct {
+	v1  T1
+	v2  T2
+	v3  T3
+	err error
+}
+
+func E3[T1, T2, T3 any](v1 T1, v2 T2, v3 T3, err error) *C3[T1, T2, T3] {
+	return &C3[T1, T2, T3]{v1: v1, v2: v2, v3: v3, err: err}
+}
+
+func (c *C3[T1, T2, T3]) Assert(msg string) (T1, T2, T3) {
+	if c.err != nil {
+		if msg != "" {
+			c.err = fmt.Errorf("%s: %w", msg, c.err)
+		}
+		panic(c.err)
+	}
+	return c.v1, c.v2, c.v3
 }
