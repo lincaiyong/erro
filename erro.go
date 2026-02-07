@@ -24,28 +24,40 @@ func Assert(b bool, msg string, args ...any) {
 	}
 }
 
-func Check0(err error) {
+func Check0(err error, msg ...string) {
 	if err != nil {
+		if len(msg) == 1 {
+			err = fmt.Errorf("%s: %w", msg[0], err)
+		}
 		panic(err)
 	}
 }
 
-func Check1[T any](v T, err error) T {
+func Check1[T any](v T, err error, msg ...string) T {
 	if err != nil {
+		if len(msg) == 1 {
+			err = fmt.Errorf("%s: %w", msg[0], err)
+		}
 		panic(err)
 	}
 	return v
 }
 
-func Check2[S, T any](s S, t T, err error) (S, T) {
+func Check2[S, T any](s S, t T, err error, msg ...string) (S, T) {
 	if err != nil {
+		if len(msg) == 1 {
+			err = fmt.Errorf("%s: %w", msg[0], err)
+		}
 		panic(err)
 	}
 	return s, t
 }
 
-func Check3[R, S, T any](r R, s S, t T, err error) (R, S, T) {
+func Check3[R, S, T any](r R, s S, t T, err error, msg ...string) (R, S, T) {
 	if err != nil {
+		if len(msg) == 1 {
+			err = fmt.Errorf("%s: %w", msg[0], err)
+		}
 		panic(err)
 	}
 	return r, s, t
