@@ -17,12 +17,6 @@ func Recover(fn func(error)) {
 	}
 }
 
-var tracePkg string
-
-func TracePkg(pkg string) {
-	tracePkg = pkg
-}
-
 func traceMsg(msg string) string {
 	const maxStackDepth = 32
 	pcs := make([]uintptr, maxStackDepth)
@@ -34,7 +28,7 @@ func traceMsg(msg string) string {
 	sb.WriteString("\nStack trace:\n")
 	for {
 		frame, more := frames.Next()
-		if tracePkg == "" || strings.HasPrefix(frame.Function, "main.") || strings.HasPrefix(frame.Function, tracePkg) {
+		if !strings.HasPrefix(frame.Function, "runtime.") {
 			sb.WriteString(fmt.Sprintf("  %s ( %s:%d )\n", frame.Function, frame.File, frame.Line))
 		}
 		if !more {
