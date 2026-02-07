@@ -3,6 +3,8 @@ package erro
 import (
 	"errors"
 	"fmt"
+	"runtime"
+	"strings"
 )
 
 func Recover(fn func(error)) {
@@ -15,11 +17,35 @@ func Recover(fn func(error)) {
 	}
 }
 
+var tracePkg string
+
+func TracePkg(pkg string) {
+	tracePkg = pkg
+}
+
 func Assert(b bool, msg string, args ...any) {
 	if !b {
 		if len(args) > 0 {
 			msg = fmt.Sprintf(msg, args...)
 		}
+		const maxStackDepth = 32
+		pcs := make([]uintptr, maxStackDepth)
+		n := runtime.Callers(2, pcs) // 2 = skip runtime.Callers + Assert
+
+		frames := runtime.CallersFrames(pcs[:n])
+		var sb strings.Builder
+		sb.WriteString(msg)
+		sb.WriteString("\nStack trace:\n")
+		for {
+			frame, more := frames.Next()
+			if tracePkg == "" || strings.HasPrefix(frame.Function, tracePkg) {
+				sb.WriteString(fmt.Sprintf("  %s ( %s:%d )\n", frame.Function, frame.File, frame.Line))
+			}
+			if !more {
+				break
+			}
+		}
+		msg = sb.String()
 		panic(errors.New(msg))
 	}
 }
