@@ -57,8 +57,11 @@ func E1[T any](v T, err error) *C1[T] {
 	return &C1[T]{v: v, err: err}
 }
 
-func (c *C1[T]) Assert(msg string) T {
+func (c *C1[T]) Assert(msg string, args ...any) T {
 	if c.err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	}
@@ -73,8 +76,11 @@ func E0(err error) *C0 {
 	return &C0{err: err}
 }
 
-func (c *C0) Assert(msg string) {
+func (c *C0) Assert(msg string, args ...any) {
 	if c.err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	}
@@ -90,8 +96,11 @@ func E2[T1, T2 any](v1 T1, v2 T2, err error) *C2[T1, T2] {
 	return &C2[T1, T2]{v1: v1, v2: v2, err: err}
 }
 
-func (c *C2[T1, T2]) Assert(msg string) (T1, T2) {
+func (c *C2[T1, T2]) Assert(msg string, args ...any) (T1, T2) {
 	if c.err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	}
@@ -109,8 +118,11 @@ func E3[T1, T2, T3 any](v1 T1, v2 T2, v3 T3, err error) *C3[T1, T2, T3] {
 	return &C3[T1, T2, T3]{v1: v1, v2: v2, v3: v3, err: err}
 }
 
-func (c *C3[T1, T2, T3]) Assert(msg string) (T1, T2, T3) {
+func (c *C3[T1, T2, T3]) Assert(msg string, args ...any) (T1, T2, T3) {
 	if c.err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	}
