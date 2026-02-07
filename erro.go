@@ -34,7 +34,7 @@ func traceMsg(msg string) string {
 	sb.WriteString("\nStack trace:\n")
 	for {
 		frame, more := frames.Next()
-		if tracePkg == "" || strings.HasPrefix(frame.Function, tracePkg) {
+		if tracePkg == "" || strings.HasPrefix(frame.Function, "main.") || strings.HasPrefix(frame.Function, tracePkg) {
 			sb.WriteString(fmt.Sprintf("  %s ( %s:%d )\n", frame.Function, frame.File, frame.Line))
 		}
 		if !more {
