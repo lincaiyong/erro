@@ -65,7 +65,7 @@ func (c *C0) Msg(msg string, args ...any) {
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	} else {
-		log.DebugLog(msg, args...)
+		log.InfoLog(msg, args...)
 	}
 }
 
@@ -86,7 +86,7 @@ func (c *C1[T]) Msg(msg string, args ...any) T {
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	} else {
-		log.DebugLog(msg, args...)
+		log.InfoLog(msg, args...)
 	}
 	return c.v
 }
@@ -109,7 +109,7 @@ func (c *C2[T1, T2]) Msg(msg string, args ...any) (T1, T2) {
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	} else {
-		log.DebugLog(msg, args...)
+		log.InfoLog(msg, args...)
 	}
 	return c.v1, c.v2
 }
@@ -133,7 +133,7 @@ func (c *C3[T1, T2, T3]) Msg(msg string, args ...any) (T1, T2, T3) {
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
 	} else {
-		log.DebugLog(msg, args...)
+		log.InfoLog(msg, args...)
 	}
 	return c.v1, c.v2, c.v3
 }
