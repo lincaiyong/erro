@@ -49,6 +49,26 @@ func Assert(b bool, msg string, args ...any) {
 	}
 }
 
+type C0 struct {
+	err error
+}
+
+func E0(err error) *C0 {
+	return &C0{err: err}
+}
+
+func (c *C0) Msg(msg string, args ...any) {
+	if c.err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
+		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
+	}
+}
+
 type C1[T any] struct {
 	v   T
 	err error
@@ -69,26 +89,6 @@ func (c *C1[T]) Msg(msg string, args ...any) T {
 		log.DebugLog(msg, args...)
 	}
 	return c.v
-}
-
-type C0 struct {
-	err error
-}
-
-func E0(err error) *C0 {
-	return &C0{err: err}
-}
-
-func (c *C0) Msg(msg string, args ...any) {
-	if c.err != nil {
-		if len(args) > 0 {
-			msg = fmt.Sprintf(msg, args...)
-		}
-		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
-		panic(errors.New(msg))
-	} else {
-		log.DebugLog(msg, args...)
-	}
 }
 
 type C2[T1, T2 any] struct {
@@ -136,31 +136,4 @@ func (c *C3[T1, T2, T3]) Msg(msg string, args ...any) (T1, T2, T3) {
 		log.DebugLog(msg, args...)
 	}
 	return c.v1, c.v2, c.v3
-}
-
-func Check0(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-func Check1[T any](v T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-	return v
-}
-
-func Check2[S, T any](s S, t T, err error) (S, T) {
-	if err != nil {
-		panic(err)
-	}
-	return s, t
-}
-
-func Check3[R, S, T any](r R, s S, t T, err error) (R, S, T) {
-	if err != nil {
-		panic(err)
-	}
-	return r, s, t
 }
