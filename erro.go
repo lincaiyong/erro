@@ -3,6 +3,7 @@ package erro
 import (
 	"errors"
 	"fmt"
+	"github.com/lincaiyong/log"
 	"runtime"
 	"strings"
 )
@@ -45,6 +46,8 @@ func Assert(b bool, msg string, args ...any) {
 		}
 		msg = traceMsg(msg)
 		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
 	}
 }
 
@@ -64,6 +67,8 @@ func (c *C1[T]) Assert(msg string, args ...any) T {
 		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
 	}
 	return c.v
 }
@@ -83,6 +88,8 @@ func (c *C0) Assert(msg string, args ...any) {
 		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
 	}
 }
 
@@ -103,6 +110,8 @@ func (c *C2[T1, T2]) Assert(msg string, args ...any) (T1, T2) {
 		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
 	}
 	return c.v1, c.v2
 }
@@ -125,6 +134,8 @@ func (c *C3[T1, T2, T3]) Assert(msg string, args ...any) (T1, T2, T3) {
 		}
 		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
 		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
 	}
 	return c.v1, c.v2, c.v3
 }
