@@ -58,7 +58,7 @@ func E1[T any](v T, err error) *C1[T] {
 	return &C1[T]{v: v, err: err}
 }
 
-func (c *C1[T]) Assert(msg string, args ...any) T {
+func (c *C1[T]) Msg(msg string, args ...any) T {
 	if c.err != nil {
 		if len(args) > 0 {
 			msg = fmt.Sprintf(msg, args...)
