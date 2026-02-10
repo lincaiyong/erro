@@ -49,6 +49,30 @@ func Assert(b bool, msg string, args ...any) {
 	}
 }
 
+func checkInfo(err error, msg string, args ...any) {
+	if err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, err))
+		panic(errors.New(msg))
+	} else {
+		log.InfoLog(msg, args...)
+	}
+}
+
+func checkDebug(err error, msg string, args ...any) {
+	if err != nil {
+		if len(args) > 0 {
+			msg = fmt.Sprintf(msg, args...)
+		}
+		msg = traceMsg(fmt.Sprintf("%s: %v", msg, err))
+		panic(errors.New(msg))
+	} else {
+		log.DebugLog(msg, args...)
+	}
+}
+
 type C0 struct {
 	err error
 }
@@ -57,16 +81,12 @@ func E0(err error) *C0 {
 	return &C0{err: err}
 }
 
-func (c *C0) Msg(msg string, args ...any) {
-	if c.err != nil {
-		if len(args) > 0 {
-			msg = fmt.Sprintf(msg, args...)
-		}
-		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
-		panic(errors.New(msg))
-	} else {
-		log.InfoLog(msg, args...)
-	}
+func (c *C0) Info(msg string, args ...any) {
+	checkInfo(c.err, msg, args...)
+}
+
+func (c *C0) Debug(msg string, args ...any) {
+	checkDebug(c.err, msg, args...)
 }
 
 type C1[T any] struct {
@@ -78,16 +98,13 @@ func E1[T any](v T, err error) *C1[T] {
 	return &C1[T]{v: v, err: err}
 }
 
-func (c *C1[T]) Msg(msg string, args ...any) T {
-	if c.err != nil {
-		if len(args) > 0 {
-			msg = fmt.Sprintf(msg, args...)
-		}
-		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
-		panic(errors.New(msg))
-	} else {
-		log.InfoLog(msg, args...)
-	}
+func (c *C1[T]) Info(msg string, args ...any) T {
+	checkInfo(c.err, msg, args...)
+	return c.v
+}
+
+func (c *C1[T]) Debug(msg string, args ...any) T {
+	checkDebug(c.err, msg, args...)
 	return c.v
 }
 
@@ -101,16 +118,13 @@ func E2[T1, T2 any](v1 T1, v2 T2, err error) *C2[T1, T2] {
 	return &C2[T1, T2]{v1: v1, v2: v2, err: err}
 }
 
-func (c *C2[T1, T2]) Msg(msg string, args ...any) (T1, T2) {
-	if c.err != nil {
-		if len(args) > 0 {
-			msg = fmt.Sprintf(msg, args...)
-		}
-		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
-		panic(errors.New(msg))
-	} else {
-		log.InfoLog(msg, args...)
-	}
+func (c *C2[T1, T2]) Info(msg string, args ...any) (T1, T2) {
+	checkInfo(c.err, msg, args...)
+	return c.v1, c.v2
+}
+
+func (c *C2[T1, T2]) Debug(msg string, args ...any) (T1, T2) {
+	checkDebug(c.err, msg, args...)
 	return c.v1, c.v2
 }
 
@@ -125,15 +139,12 @@ func E3[T1, T2, T3 any](v1 T1, v2 T2, v3 T3, err error) *C3[T1, T2, T3] {
 	return &C3[T1, T2, T3]{v1: v1, v2: v2, v3: v3, err: err}
 }
 
-func (c *C3[T1, T2, T3]) Msg(msg string, args ...any) (T1, T2, T3) {
-	if c.err != nil {
-		if len(args) > 0 {
-			msg = fmt.Sprintf(msg, args...)
-		}
-		msg = traceMsg(fmt.Sprintf("%s: %v", msg, c.err))
-		panic(errors.New(msg))
-	} else {
-		log.InfoLog(msg, args...)
-	}
+func (c *C3[T1, T2, T3]) Info(msg string, args ...any) (T1, T2, T3) {
+	checkInfo(c.err, msg, args...)
+	return c.v1, c.v2, c.v3
+}
+
+func (c *C3[T1, T2, T3]) Debug(msg string, args ...any) (T1, T2, T3) {
+	checkDebug(c.err, msg, args...)
 	return c.v1, c.v2, c.v3
 }
