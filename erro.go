@@ -21,7 +21,7 @@ func Recover(fn func(error)) {
 func traceMsg(msg string) string {
 	const maxStackDepth = 32
 	pcs := make([]uintptr, maxStackDepth)
-	n := runtime.Callers(3, pcs) // 2 = skip runtime.Callers + this + Assert
+	n := runtime.Callers(4, pcs) // 2 = skip runtime.Callers + this + check + Assert
 
 	frames := runtime.CallersFrames(pcs[:n])
 	var sb strings.Builder
