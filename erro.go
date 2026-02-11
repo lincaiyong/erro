@@ -41,12 +41,16 @@ func traceMsg(msg string) string {
 
 func Assert(b bool, msg string, args ...any) {
 	if !b {
-		if len(args) > 0 {
-			msg = fmt.Sprintf(msg, args...)
-		}
-		msg = traceMsg(msg)
-		panic(errors.New(msg))
+		assertPanic(msg, args...)
 	}
+}
+
+func assertPanic(msg string, args ...any) {
+	if len(args) > 0 {
+		msg = fmt.Sprintf(msg, args...)
+	}
+	msg = traceMsg(msg)
+	panic(errors.New(msg))
 }
 
 func checkInfo(err error, msg string, args ...any) {
